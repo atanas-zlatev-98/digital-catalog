@@ -1,0 +1,63 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String  @id @default("gen_random_uuid()")
+  username     String  @unique
+  email        String  @unique
+  password     String
+  profileImage String?
+  role         Role    @default(USER)
+
+  products Product[]
+}
+
+model Product {
+  id          String  @id @default("gen_random_uuid()")
+  productName String
+  description String
+  price       Decimal
+  imageUrl    String
+
+  manufacturerId String
+  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  creatorId String
+  creator   User   @relation(fields: [creatorId], references: [id])
+
+  status Status @default(ACTIVE)
+}
+
+model Manufacturer {
+  id          String    @id @default("gen_random_uuid()")
+  name        String
+  description String
+  products    Product[]
+}
+
+model Category {
+  id          String    @id @default("gen_random_uuid()")
+  name        String
+  description String
+  products    Product[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Status {
+  ACTIVE
+  PENDING
+}
