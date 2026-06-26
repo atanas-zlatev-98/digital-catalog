@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { signInUser } from "@/lib/actions/user.actions";
 import { SignInFormData } from "@/types/auth.types";
 import { useState } from "react";
 
@@ -14,10 +15,9 @@ export default function SignInForm() {
         password: "",
     });
 
-    const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        console.log(formData);
+        await signInUser(formData);
     }
 
   return (
