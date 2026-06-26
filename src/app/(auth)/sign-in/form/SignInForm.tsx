@@ -24,7 +24,7 @@ export default function SignInForm() {
        const response = await signInUser(formData);
 
        if (response?.success) {
-        router.push("/");
+        router.push("/dashboard");
        } else {
           setError(response?.error || 'An error occurred. Please try again.');
        }
