@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { signInUser } from "@/lib/actions/user.actions";
 import { SignInFormData } from "@/types/auth.types";
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
 
@@ -15,9 +15,19 @@ export default function SignInForm() {
         password: "",
     });
 
+    const [error, setError] = useState<string>('');
+
+    const router = useRouter();
+
     const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        await signInUser(formData);
+       const response = await signInUser(formData);
+
+       if (response?.success) {
+        router.push("/");
+       } else {
+          setError(response?.error || 'An error occurred. Please try again.');
+       }
     }
 
   return (
@@ -51,6 +61,7 @@ export default function SignInForm() {
               <Input id="password" type="password" required onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
             </div>
           </div>
+          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         </CardContent>
         <CardFooter className="flex-col gap-2">
           <Button type="submit" className="w-full">
