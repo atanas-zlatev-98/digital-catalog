@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id           String  @id @default("gen_random_uuid()")
+  id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   username     String  @unique
   email        String  @unique
   password     String
@@ -20,33 +20,33 @@ model User {
 }
 
 model Product {
-  id          String  @id @default("gen_random_uuid()")
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   productName String
   description String
   price       Decimal
   imageUrl    String
 
-  manufacturerId String
+  manufacturerId String  @db.Uuid
   manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
 
-  categoryId String
+  categoryId String  @db.Uuid
   category   Category @relation(fields: [categoryId], references: [id])
 
-  creatorId String
+  creatorId String  @db.Uuid
   creator   User   @relation(fields: [creatorId], references: [id])
 
   status Status @default(ACTIVE)
 }
 
 model Manufacturer {
-  id          String    @id @default("gen_random_uuid()")
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String
   description String
   products    Product[]
 }
 
 model Category {
-  id          String    @id @default("gen_random_uuid()")
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String
   description String
   products    Product[]
