@@ -15,12 +15,15 @@ export default function SignInForm() {
         password: "",
     });
 
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const [error, setError] = useState<string>('');
 
     const router = useRouter();
 
     const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
        const response = await signInUser(formData);
 
        if (response?.success) {
@@ -28,6 +31,7 @@ export default function SignInForm() {
        } else {
           setError(response?.error || 'An error occurred. Please try again.');
        }
+       setIsLoading(false);
     }
 
   return (
@@ -61,11 +65,13 @@ export default function SignInForm() {
               <Input id="password" type="password" required onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
             </div>
           </div>
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          <p className="text-center">
+            {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+          </p>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
-            Login
+          <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
+            {isLoading ? 'Logging in...' : 'Login'}
           </Button>
         </CardFooter>
       </Card>
