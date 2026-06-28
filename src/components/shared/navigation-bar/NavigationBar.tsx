@@ -3,6 +3,7 @@ import { User } from "@/types/user.types";
 import {signOutUser} from "@/lib/actions/user.actions";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default function NavigationBar({user}: {user?: User}) {
 
@@ -17,7 +18,13 @@ export default function NavigationBar({user}: {user?: User}) {
         <nav className="bg-gray-800 w-full h-16">
             <div className="flex max-w-7xl mx-auto w-full items-center justify-between h-full px-4 bg-red-500">
                 <div><p>Logo</p></div>
+                
                 <div>
+                    {user && user.role === 'ADMIN' && (
+                    <Link href="/admin/dashboard" className="text-white px-4 py-2 ">
+                        Dashboard
+                    </Link>
+                )}
                     {user ? `Hello, ${user.username}` : 'User'}
                     <Button onClick={handleSignOut} className="ml-4">Sign Out</Button>
                 </div>
