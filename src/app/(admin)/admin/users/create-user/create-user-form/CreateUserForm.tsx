@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { signUpUser } from "@/lib/actions/user.actions";
 import { SignUpFormData } from "@/types/auth.types";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const initialFormData: SignUpFormData = {
     username: "",
@@ -24,6 +25,10 @@ const initialFormData: SignUpFormData = {
 export default function CreateUserForm() {
 
     const [formData,setFormData] = useState<SignUpFormData>(initialFormData);
+    const [isLoading,setIsLoading] = useState<boolean>(false);
+    const [error,setError] = useState<string>('');
+
+    const router = useRouter();
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -38,9 +43,21 @@ export default function CreateUserForm() {
 
     const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-       
-        await signUpUser(formData);
-        setFormData(initialFormData);
+        setIsLoading(true);
+        const response = await signUpUser(formData);
+        
+        if(response?.success){
+          setFormData(initialFormData);
+          setIsLoading(false);
+          
+          router.push("/admin/users");
+
+        }else {
+          setError(response?.error || 'An error occurred. Please try again.');
+          setIsLoading(false);
+        }
+
+
     }
 
   return (
@@ -104,10 +121,11 @@ export default function CreateUserForm() {
                 onChange={changeHandler}
               />
             </div>
+             {error && <p className="text-red-500 text-sm text-center">{error}</p>}
           </div>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full cursor-pointer">
+          <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
             Create User
           </Button>
         </CardFooter>

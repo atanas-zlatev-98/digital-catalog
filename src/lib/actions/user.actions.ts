@@ -20,29 +20,37 @@ export async function signInUser(formData: SignInFormData) {
 
 export async function signUpUser(formData: SignUpFormData) {
   await requireAdmin();
+
   const {username, email, password} = formData;
 
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      email,
+   try {
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [{ email }, { username }],
+      },
+      select: { email: true, username: true },
+    });
+
+
+    if (existingUser) {
+      if (existingUser.email === email) {
+        return { success: false, error: "Email or username already exists" };
+      }
+      return { success: false, error: "Email or username already exists" };
     }
-  })
 
-  console.log(existingUser)
+    await prisma.user.create({
+      data: {
+        username,
+        email,
+        password: await bcrypt.hash(password, 10),
+      },
+    });
 
-  if(existingUser){
-     return { success: false, error: "Email already exists" };
+    return { success: true, message: "User created successfully" };
+  } catch (error) {
+    return { success: false, error: "Something went wrong. Please try again." };
   }
-
-  await prisma.user.create({
-    data:{
-      username,
-      email,
-      password: await bcrypt.hash(password, 10)
-    }
-  })
-
-  return { success: true, message: "User created successfully" };
 
 }
 
