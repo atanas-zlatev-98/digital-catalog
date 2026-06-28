@@ -6,6 +6,15 @@ import { AuthError } from "next-auth";
 import { prisma } from "../prisma";
 import bcrypt from "bcryptjs";
 
+async function requireAdmin(){
+  const session = await auth();
+  
+  if(!session || session.user?.role !== "ADMIN"){
+    throw new Error("Unauthorized");
+  }
+  return session;
+}
+
 export async function signInUser(formData: SignInFormData) {
   const { email, password } = formData;
   try {
@@ -65,11 +74,22 @@ export async function signOutUser() {
   }
 }
 
-async function requireAdmin(){
-  const session = await auth();
-  
-  if(!session || session.user?.role !== "ADMIN"){
-    throw new Error("Unauthorized");
+export async function getAllRegularUsers() {
+  await requireAdmin();
+
+  try{
+    const users = await prisma.user.findMany({
+      where: {
+        role: "USER",
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        role: true
+  }});
+    return { success: true, users };
+  }catch(err){
+    return { success: false, error: "Error fetching users" };
   }
-  return session;
 }
