@@ -10,12 +10,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { RegularUser } from "@/types/user.types"
+import EditUserForm from "./edit-user-form/EditUserForm";
 
 
 export function TableDialog({ user }:{ user: RegularUser }) {
+
   return (
     <Dialog>
-      <form>
         <DialogTrigger asChild>
           <Button variant="outline">Manage</Button>
         </DialogTrigger>
@@ -24,9 +25,10 @@ export function TableDialog({ user }:{ user: RegularUser }) {
             <DialogTitle>Manage User</DialogTitle>
             <DialogDescription>
               Make changes to your profile here. Click save when you&apos;re
-              done. userID: {user.id}
+              done. userID: {user.id} {user.role}
             </DialogDescription>
           </DialogHeader>
+           <EditUserForm user={user} />
             <div className="grid gap-4 py-4">
                 <Button variant="outline">Edit</Button>
                 <Button variant="destructive">Delete</Button>
@@ -38,7 +40,6 @@ export function TableDialog({ user }:{ user: RegularUser }) {
             <Button type="submit">Save changes</Button>
           </DialogFooter>
         </DialogContent>
-      </form>
     </Dialog>
   )
 }
