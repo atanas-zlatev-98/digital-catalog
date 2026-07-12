@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input"
 import { RegularUser } from "@/types/user.types"
 import { useState } from "react";
 
+
 export default function EditUserForm({ user }:{ user: RegularUser }) {
     const initialFormData = {
         username: user.username,

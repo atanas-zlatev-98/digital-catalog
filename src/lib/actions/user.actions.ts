@@ -93,3 +93,24 @@ export async function getAllRegularUsers() {
     return { success: false, error: "Error fetching users" };
   }
 }
+
+
+export async function removeUserById(userId: string) {
+  await requireAdmin();
+
+  try{
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      if(!user){
+        return { success: false, error: "User not found" };
+      }
+
+      await prisma.user.delete({where: { id: userId }});
+
+      return { success: true, message: "User deleted successfully" };
+  }catch(err){
+    return { success: false, error: "Error removing user" };
+  }
+}

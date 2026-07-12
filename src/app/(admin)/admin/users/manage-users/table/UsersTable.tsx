@@ -6,11 +6,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+
 import { RegularUser } from "@/types/user.types";
 import { TableDialog } from "./dialog/TableDialog";
 
-export function UsersTable({ users }: { users: RegularUser[] }) {
+export function UsersTable({ users, onUserDelete }: { users: RegularUser[]; onUserDelete: () => void }) {
     return (
         <Table>
             <TableHeader>
@@ -42,7 +42,7 @@ export function UsersTable({ users }: { users: RegularUser[] }) {
                     {new Date(user.createdAt).toLocaleDateString()}
                   </TableCell> */}
                   <TableCell>
-                    <TableDialog user={user}/>
+                    <TableDialog user={user} onUserDelete={onUserDelete}/>
                   </TableCell>
                 </TableRow>
               ))}

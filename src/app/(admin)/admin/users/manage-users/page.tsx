@@ -4,14 +4,13 @@ import { getAllRegularUsers } from "@/lib/actions/user.actions";
 import { RegularUser } from "@/types/user.types";
 import { UsersTable } from "./table/UsersTable";
 
-export default function ManageUsersPage() {
+export default function ManageUsers() {
 
     const [users, setUsers] = useState<RegularUser[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
 
-    useEffect(()=>{
-        const fetchUsers = async () => {
+    const fetchUsers = async () => {
             try{
                 const response = await getAllRegularUsers();
 
@@ -24,6 +23,8 @@ export default function ManageUsersPage() {
                 setIsLoading(false);
             }
         } 
+
+    useEffect(()=>{
         fetchUsers();
     },[])
 
@@ -37,7 +38,7 @@ export default function ManageUsersPage() {
           {isLoading ? (
             <div className="p-4">Loading...</div>
           ):(
-            <UsersTable users={users}/>
+            <UsersTable users={users} onUserDelete={fetchUsers}/>
           )}
         </div>
       </div>
